@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URBI – Das Städte-Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #38bdf8;
+    --gold: #fbbf24;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --ok: #22c55e;
+    --err: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+  }
+  .app { width: 100%; max-width: 820px; }
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  }
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 5px; }
+  select, input, button {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  button {
+    background: var(--accent);
+    color: #0f172a;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+  }
+  button:active { transform: scale(0.98); }
+  .btn-gold { background: var(--gold); }
+  .btn-sec { background: #334155; color: var(--text); }
+  .stage {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #020617;
+    margin-bottom: 14px;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+  .slide.active { opacity: 1; }
+  .hud {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .badge {
+    background: rgba(15, 23, 42, 0.85);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .pts-badge { color: var(--gold); font-size: 1.1rem; }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .opt-btn {
+    background: #0f172a;
+    color: var(--text);
+    border: 1px solid #334155;
+    padding: 14px 10px;
+    font-weight: 600;
+  }
+  .opt-btn.correct { background: var(--ok); color: #052e16; border-color: var(--ok); }
+  .opt-btn.wrong { background: var(--err); color: #fff; border-color: var(--err); }
+  .scores { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .p-tag {
+    background: #0f172a;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #334155;
+  }
+  .p-tag.turn { border-color: var(--gold); color: var(--gold); font-weight: 700; }
+  .hidden { display: none !important; }
+  .credits { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 12px; }
+  @media (max-width: 600px) {
+    .stage { height: 260px; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>URBI</h1>
+  <div class="sub">Das weltweite Städte-Quiz – Vom unbekannten Viertel bis zum Wahrzeichen</div>
+
+  <div id="menuView" class="card">
+    <div class="grid-2">
+      <div>
+        <label>Region / Kontinent</label>
+        <select id="fCont">
+          <option value="ALL">Weltweit</option>
+          <option value="EU">Europa</option>
+          <option value="AS">Asien</option>
+          <option value="AM">Amerika</option>
+          <option value="AF">Afrika & Ozeanien</option>
+        </select>
+      </div>
+      <div>
+        <label>Städte-Auswahl</label>
+        <select id="fType">
+          <option value="ALL">Hauptstädte & Millionenstädte</option>
+          <option value="CAP">Nur Hauptstädte</option>
+          <option value="MIL">Nur Millionenstädte</option>
+        </select>
+      </div>
+      <div>
+        <label>Antwortmöglichkeiten</label>
+        <select id="fOpts">
+          <option value="4">4 Städte</option>
+          <option value="6" selected>6 Städte</option>
+          <option value="8">8 Städte</option>
+        </select>
+      </div>
+      <div>
+        <label>Zielpunktzahl</label>
+        <select id="fGoal">
+          <option value="30">30 Punkte (Kurz)</option>
+          <option value="50" selected>50 Punkte (Standard)</option>
+          <option value="75">75 Punkte (Lang)</option>
+        </select>
+      </div>
+    </div>
+    <label>Spieler (kommagetrennt für Mehrspieler)</label>
+    <input id="pInput" value="Spieler 1" style="margin-bottom:14px;">
+    <button class="btn-gold" id="startBtn">Spiel starten</button>
+    <div class="credits">Bild- & Stadtdaten bereitgestellt von Wikipedia & Wikimedia Commons (CC-Lizenzen)</div>
+  </div>
+
+  <div id="gameView" class="card hidden">
+    <div id="scoreBar" class="scores"></div>
+    <div class="stage">
+      <div class="hud">
+        <span class="badge" id="imgCounter">Bild 1 / 10</span>
+        <span class="badge pts-badge" id="ptsDisplay">10 Punkte</span>
+      </div>
+      <img id="imgA" class="slide" alt="">
+      <img id="imgB" class="slide" alt="">
+    </div>
+    <div id="loadingTxt" style="text-align:center; padding:20px; color:var(--muted);">Suche Stadtansichten...</div>
+    <div id="optGrid" class="options"></div>
+    <div id="infoBox" class="hidden" style="margin-top:14px; padding:12px; background:#0f172a; border-radius:10px;">
+      <strong id="resTitle" style="color:var(--gold); font-size:1.1rem;"></strong>
+      <p id="resDesc" style="font-size:0.9rem; color:#cbd5e1; margin:6px 0 12px;"></p>
+      <button id="nextBtn">Nächste Stadt</button>
+    </div>
+  </div>
+</div>
+<script>
+const CITIES = [
+  { n: "Berlin", c: "DE", r: "EU", cap: 1, mil: 1, lat: 52.52, lon: 13.405 },
+  { n: "Paris", c: "Frankreich", r: "EU", cap: 1, mil: 1, lat: 48.8566, lon: 2.3522 },
+  { n: "Madrid", c: "Spanien", r: "EU", cap: 1, mil: 1, lat: 40.4168, lon: -3.7038 },
+  { n: "Rom", c: "Italien", r: "EU", cap: 1, mil: 1, lat: 41.9028, lon: 12.4964 },
+  { n: "London", c: "Großbritannien", r: "EU", cap: 1, mil: 1, lat: 51.5074, lon: -0.1278 },
+  { n: "Wien", c: "Österreich", r: "EU", cap: 1, mil: 1, lat: 48.2082, lon: 16.3738 },
+  { n: "Warschau", c: "Polen", r: "EU", cap: 1, mil: 1, lat: 52.2297, lon: 21.0122 },
+  { n: "Prag", c: "Tschechien", r: "EU", cap: 1, mil: 1, lat: 50.0755, lon: 14.4378 },
+  { n: "Barcelona", c: "Spanien", r: "EU", cap: 0, mil: 1, lat: 41.3851, lon: 2.1734 },
+  { n: "Mailand", c: "Italien", r: "EU", cap: 0, mil: 1, lat: 45.4642, lon: 9.1900 },
+  { n: "Hamburg", c: "Deutschland", r: "EU", cap: 0, mil: 1, lat: 53.5511, lon: 9.9937 },
+  { n: "München", c: "Deutschland", r: "EU", cap: 0, mil: 1, lat: 48.1351, lon: 11.5820 },
+  { n: "Lissabon", c: "Portugal", r: "EU", cap: 1, mil: 0, lat: 38.7223, lon: -9.1393 },
+  { n: "Athen", c: "Griechenland", r: "EU", cap: 1, mil: 0, lat: 37.9838, lon: 23.7275 },
+  { n: "Stockholm", c: "Schweden", r: "EU", cap: 1, mil: 0, lat: 59.3293, lon: 18.0686 },
+  { n: "Oslo", c: "Norwegen", r: "EU", cap: 1, mil: 0, lat: 59.9139, lon: 10.7522 },
+  { n: "Bern", c: "Schweiz", r: "EU", cap: 1, mil: 0, lat: 46.9480, lon: 7.4474 },
+  { n: "Tokio", c: "Japan", r: "AS", cap: 1, mil: 1, lat: 35.6762, lon: 139.6503 },
+  { n: "Seoul", c: "Südkorea", r: "AS", cap: 1, mil: 1, lat: 37.5665, lon: 126.9780 },
+  { n: "Peking", c: "China", r: "AS", cap: 1, mil: 1, lat: 39.9042, lon: 116.4074 },
+  { n: "Bangkok", c: "Thailand", r: "AS", cap: 1, mil: 1, lat: 13.7563, lon: 100.5018 },
+  { n: "Singapur", c: "Singapur", r: "AS", cap: 1, mil: 1, lat: 1.3521, lon: 103.8198 },
+  { n: "Mumbai", c: "Indien", r: "AS", cap: 0, mil: 1, lat: 19.0760, lon: 72.8777 },
+  { n: "Dubai", c: "VAE", r: "AS", cap: 0, mil: 1, lat: 25.2048, lon: 55.2708 },
+  { n: "Istanbul", c: "Türkei", r: "AS", cap: 0, mil: 1, lat: 41.0082, lon: 28.9784 },
+  { n: "New York City", c: "USA", r: "AM", cap: 0, mil: 1, lat: 40.7128, lon: -74.0060 },
+  { n: "Washington, D.C.", c: "USA", r: "AM", cap: 1, mil: 0, lat: 38.9072, lon: -77.0369 },
+  { n: "Ottawa", c: "Kanada", r: "AM", cap: 1, mil: 0, lat: 45.4215, lon: -75.6972 },
+  { n: "Toronto", c: "Kanada", r: "AM", cap: 0, mil: 1, lat: 43.6532, lon: -79.3832 },
+  { n: "Mexiko-Stadt", c: "Mexiko", r: "AM", cap: 1, mil: 1, lat: 19.4326, lon: -99.1332 },
+  { n: "Buenos Aires", c: "Argentinien", r: "AM", cap: 1, mil: 1, lat: -34.6037, lon: -58.3816 },
+  { n: "Rio de Janeiro", c: "Brasilien", r: "AM", cap: 0, mil: 1, lat: -22.9068, lon: -43.1729 },
+  { n: "Brasília", c: "Brasilien", r: "AM", cap: 1, mil: 1, lat: -15.7975, lon: -47.8919 },
+  { n: "Kairo", c: "Ägypten", r: "AF", cap: 1, mil: 1, lat: 30.0444, lon: 31.2357 },
+  { n: "Nairobi", c: "Kenia", r: "AF", cap: 1, mil: 1, lat: -1.2921, lon: 36.8219 },
+  { n: "Kapstadt", c: "Südafrika", r: "AF", cap: 1, mil: 1, lat: -33.9249, lon: 18.4241 },
+  { n: "Sydney", c: "Australien", r: "AF", cap: 0, mil: 1, lat: -33.8688, lon: 151.2093 },
+  { n: "Canberra", c: "Australien", r: "AF", cap: 1, mil: 0, lat: -35.2809, lon: 149.1300 }
+];
+
+const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
+const API_CM = "https://commons." + "wiki" + "media.org/w/api.php";
+let state = { players: [], turn: 0, goal: 50, opts: 6, pool: [], used: [], timer: null, step: 0, locked: false, cur: null };
+const shuffle = a => [...a].sort(() => Math.random() - 0.5);
+const validImg = u => u && /\.(jpg|jpeg|png)$/i.test(u) && !/flag|coat|map|logo|icon|locator|blank/i.test(u);
+
+async function fetchCitySlides(city) {
+  const offLat = city.lat + (Math.random() - 0.5) * 0.06;
+  const offLon = city.lon + (Math.random() - 0.5) * 0.06;
+  const uGeo = `${API_CM}?action=query&generator=geosearch&ggscoord=${offLat}|${offLon}&ggsradius=6000&ggsnamespace=6&ggslimit=18&prop=imageinfo&iiprop=url&iiurlwidth=900&format=json&origin=*`;
+  const uArt = `${API_DE}?action=query&titles=${encodeURIComponent(city.n)}&generator=images&gimlimit=20&prop=imageinfo|extracts&exintro=1&explaintext=1&iiprop=url&iiurlwidth=900&format=json&origin=*`;
+  const [rGeo, rArt] = await Promise.all([fetch(uGeo).then(r => r.json()), fetch(uArt).then(r => r.json())]);
+
+  const outer = Object.values(rGeo.query?.pages || {}).map(p => p.imageinfo?.at(0)?.thumburl).filter(validImg);
+  const inner = Object.values(rArt.query?.pages || {}).map(p => p.imageinfo?.at(0)?.thumburl).filter(validImg);
+  const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
+  while (combined.length < 10 && combined.length > 0) combined.push(combined.at(combined.length - 1));
+  return combined.slice(0, 10);
+}
+
+async function fetchExtract(name) {
+  const u = `${API_DE}?action=query&titles=${encodeURIComponent(name)}&prop=extracts&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`;
+  const d = await fetch(u).then(r => r.json());
+  const p = Object.values(d.query?.pages || {}).at(0);
+  return p?.extract || "";
+}
+
+function renderScores() {
+  const bar = document.getElementById("scoreBar");
+  bar.innerHTML = state.players.map((p, i) =>
+    `<div class="p-tag ${i === state.turn ? "turn" : ""}">${p.name}: ${p.pts} Pkt</div>`
+  ).join("");
+}
+
+function showSlide(urls, idx) {
+  const a = document.getElementById("imgA");
+  const b = document.getElementById("imgB");
+  const showA = idx % 2 === 0;
+  const target = showA ? a : b;
+  const other = showA ? b : a;
+  target.src = urls.at(idx);
+  target.onload = () => { target.classList.add("active"); other.classList.remove("active"); };
+  document.getElementById("imgCounter").textContent = `Bild ${idx + 1} / 10`;
+  document.getElementById("ptsDisplay").textContent = `${10 - idx} Punkte`;
+}
+
+async function startRound() {
+  clearInterval(state.timer);
+  state.locked = false;
+  state.step = 0;
+  document.getElementById("infoBox").classList.add("hidden");
+  document.getElementById("optGrid").innerHTML = "";
+  document.getElementById("loadingTxt").classList.remove("hidden");
+  document.getElementById("imgA").classList.remove("active");
+  document.getElementById("imgB").classList.remove("active");
+  renderScores();
+
+  let avail = state.pool.filter(c => !state.used.includes(c.n));
+  if (!avail.length) { state.used = []; avail = state.pool; }
+  const city = shuffle(avail).at(0);
+  state.used.push(city.n);
+  state.cur = city;
+
+  const slides = await fetchCitySlides(city);
+  if (slides.length < 3) return startRound();
+  document.getElementById("loadingTxt").classList.add("hidden");
+
+  const sameReg = CITIES.filter(c => c.n !== city.n && c.r === city.r);
+  const others = CITIES.filter(c => c.n !== city.n && c.r !== city.r);
+  const distractors = [...shuffle(sameReg), ...shuffle(others)].slice(0, state.opts - 1);
+  const choices = shuffle([city, ...distractors]);
+
+  const grid = document.getElementById("optGrid");
+  choices.forEach(ch => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.textContent = ch.n;
+    let moved = false;
+    btn.addEventListener("touchstart", () => { moved = false; }, { passive: true });
+    btn.addEventListener("touchmove", () => { moved = true; }, { passive: true });
+    btn.addEventListener("click", () => { if (!moved) handleGuess(ch.n, btn); });
+    grid.appendChild(btn);
+  });
+
+  showSlide(slides, 0);
+  state.timer = setInterval(() => {
+    state.step++;
+    if (state.step < 10) showSlide(slides, state.step);
+    else { clearInterval(state.timer); handleGuess(null, null); }
+  }, 3000);
+}
+
+async function handleGuess(guess, btn) {
+  if (state.locked) return;
+  state.locked = true;
+  clearInterval(state.timer);
+  const win = guess === state.cur.n;
+  const gained = win ? (10 - state.step) : 0;
+  if (win) state.players.at(state.turn).pts += gained;
+
+  document.querySelectorAll(".opt-btn").forEach(b => {
+    if (b.textContent === state.cur.n) b.classList.add("correct");
+    else if (b === btn) b.classList.add("wrong");
+  });
+  renderScores();
+
+  const desc = await fetchExtract(state.cur.n);
+  document.getElementById("resTitle").textContent = win
+    ? `Richtig! +${gained} Punkte (${state.cur.n}, ${state.cur.c})`
+    : `Gesucht war: ${state.cur.n} (${state.cur.c})`;
+  document.getElementById("resDesc").textContent = desc;
+  document.getElementById("infoBox").classList.remove("hidden");
+}
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  state.turn = (state.turn + 1) % state.players.length;
+  if (state.turn === 0) {
+    const top = Math.max(...state.players.map(p => p.pts));
+    const leaders = state.players.filter(p => p.pts === top);
+    if (top >= state.goal && leaders.length === 1) {
+      alert(`Herzlichen Glückwunsch! ${leaders.at(0).name} gewinnt URBI mit ${top} Punkten!`);
+      document.getElementById("gameView").classList.add("hidden");
+      document.getElementById("menuView").classList.remove("hidden");
+      return;
+    }
+  }
+  startRound();
+});
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  const cont = document.getElementById("fCont").value;
+  const type = document.getElementById("fType").value;
+  state.opts = Number(document.getElementById("fOpts").value);
+  state.goal = Number(document.getElementById("fGoal").value);
+  const names = document.getElementById("pInput").value.split(",").map(s => s.trim()).filter(Boolean);
+  state.players = (names.length ? names : ["Spieler 1"]).map(name => ({ name, pts: 0 }));
+
+  state.pool = CITIES.filter(c => {
+    if (cont !== "ALL" && c.r !== cont) return false;
+    if (type === "CAP" && !c.cap) return false;
+    if (type === "MIL" && !c.mil) return false;
+    return true;
+  });
+
+  state.turn = 0;
+  state.used = [];
+  document.getElementById("menuView").classList.add("hidden");
+  document.getElementById("gameView").classList.remove("hidden");
+  startRound();
+});
+</script>
+</body>
+</html>
