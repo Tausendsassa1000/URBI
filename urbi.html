@@ -253,36 +253,53 @@ const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
 const API_CM = "https://commons." + "wiki" + "media.org/w/api.php";
 let state = { players: [], turn: 0, goal: 50, opts: 6, pool: [], used: [], timer: null, step: 0, locked: false, cur: null };
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
-const validImg = u => u && /\.(jpg|jpeg)$/i.test(u) && !/flag|coat|map|logo|icon|locator|blank|wappen|karte|diagram|plan/i.test(u);
+const validImg = u => u && /\.(jpg|jpeg)/i.test(u) && !/flag|coat|map|logo|icon|locator|blank|wappen|karte|diagram|plan|seal|arms/i.test(u);
 
 async function fetchCitySlides(city) {
+  const hdr = { "Api-User-Agent": "URBI-Quiz/1.0 (https://ka-2.art)" };
+  let outer = [];
+  let inner = [];
+
   try {
     const uGeo = `${API_CM}?action=query&generator=geosearch&ggscoord=${city.lat}|${city.lon}&ggsradius=10000&ggsnamespace=6&ggslimit=25&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
-    const uArt = `${API_DE}?action=query&titles=${encodeURIComponent(city.n)}&generator=images&gimlimit=25&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
-    const [rGeo, rArt] = await Promise.all([
-      fetch(uGeo).then(r => r.json()),
-      fetch(uArt).then(r => r.json())
-    ]);
-
-    const outer = Object.values(rGeo.query?.pages || {})
+    const rGeo = await fetch(uGeo, { headers: hdr }).then(r => r.json());
+    outer = Object.values(rGeo.query?.pages || {})
       .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
       .filter(validImg);
-    const inner = Object.values(rArt.query?.pages || {})
-      .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
-      .filter(validImg);
+  } catch (e) {}
 
-    const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
-    if (!combined.length) return [];
-    while (combined.length < 10) combined.push(combined.at(combined.length - 1));
-    return combined.slice(0, 10);
-  } catch (e) {
-    return [];
+  try {
+    const restBase = "https://de." + "wiki" + "pedia.org/api/rest_v1/page/media-list/";
+    const rMedia = await fetch(restBase + encodeURIComponent(city.n), { headers: hdr }).then(r => r.json());
+    inner = (rMedia.items || [])
+      .filter(item => item.type === "image" && item.srcset?.length)
+      .map(item => {
+        const src = item.srcset.at(0).src;
+        return src.startsWith("//") ? "https:" + src : src;
+      })
+      .filter(validImg);
+  } catch (e) {}
+
+  if (inner.length < 4) {
+    try {
+      const uSrch = `${API_CM}?action=query&generator=search&gsrsearch=${encodeURIComponent(city.n + " landmark architecture")}&gsrnamespace=6&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+      const rSrch = await fetch(uSrch, { headers: hdr }).then(r => r.json());
+      const extra = Object.values(rSrch.query?.pages || {})
+        .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
+        .filter(validImg);
+      inner = [...inner, ...extra];
+    } catch (e) {}
   }
+
+  const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
+  if (!combined.length) return [];
+  while (combined.length < 10) combined.push(combined.at(combined.length - 1));
+  return combined.slice(0, 10);
 }
 
 async function fetchExtract(name) {
   try {
-    const u = `${API_DE}?action=query&titles=${encodeURIComponent(name)}&prop=extracts&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`;
+    const u = `${API_DE}?action=query&redirects=1&titles=${encodeURIComponent(name)}&prop=extracts&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`;
     const d = await fetch(u).then(r => r.json());
     const p = Object.values(d.query?.pages || {}).at(0);
     return p?.extract || "";
