@@ -208,93 +208,117 @@
   </div>
 </div>
 <script>
+<script>
 const CITIES = [
-  { n: "Berlin", c: "DE", r: "EU", cap: 1, mil: 1, lat: 52.52, lon: 13.405 },
-  { n: "Paris", c: "Frankreich", r: "EU", cap: 1, mil: 1, lat: 48.8566, lon: 2.3522 },
-  { n: "Madrid", c: "Spanien", r: "EU", cap: 1, mil: 1, lat: 40.4168, lon: -3.7038 },
-  { n: "Rom", c: "Italien", r: "EU", cap: 1, mil: 1, lat: 41.9028, lon: 12.4964 },
-  { n: "London", c: "Großbritannien", r: "EU", cap: 1, mil: 1, lat: 51.5074, lon: -0.1278 },
-  { n: "Wien", c: "Österreich", r: "EU", cap: 1, mil: 1, lat: 48.2082, lon: 16.3738 },
-  { n: "Warschau", c: "Polen", r: "EU", cap: 1, mil: 1, lat: 52.2297, lon: 21.0122 },
-  { n: "Prag", c: "Tschechien", r: "EU", cap: 1, mil: 1, lat: 50.0755, lon: 14.4378 },
-  { n: "Barcelona", c: "Spanien", r: "EU", cap: 0, mil: 1, lat: 41.3851, lon: 2.1734 },
-  { n: "Mailand", c: "Italien", r: "EU", cap: 0, mil: 1, lat: 45.4642, lon: 9.1900 },
-  { n: "Hamburg", c: "Deutschland", r: "EU", cap: 0, mil: 1, lat: 53.5511, lon: 9.9937 },
-  { n: "München", c: "Deutschland", r: "EU", cap: 0, mil: 1, lat: 48.1351, lon: 11.5820 },
-  { n: "Lissabon", c: "Portugal", r: "EU", cap: 1, mil: 0, lat: 38.7223, lon: -9.1393 },
-  { n: "Athen", c: "Griechenland", r: "EU", cap: 1, mil: 0, lat: 37.9838, lon: 23.7275 },
-  { n: "Stockholm", c: "Schweden", r: "EU", cap: 1, mil: 0, lat: 59.3293, lon: 18.0686 },
-  { n: "Oslo", c: "Norwegen", r: "EU", cap: 1, mil: 0, lat: 59.9139, lon: 10.7522 },
-  { n: "Bern", c: "Schweiz", r: "EU", cap: 1, mil: 0, lat: 46.9480, lon: 7.4474 },
-  { n: "Tokio", c: "Japan", r: "AS", cap: 1, mil: 1, lat: 35.6762, lon: 139.6503 },
-  { n: "Seoul", c: "Südkorea", r: "AS", cap: 1, mil: 1, lat: 37.5665, lon: 126.9780 },
-  { n: "Peking", c: "China", r: "AS", cap: 1, mil: 1, lat: 39.9042, lon: 116.4074 },
-  { n: "Bangkok", c: "Thailand", r: "AS", cap: 1, mil: 1, lat: 13.7563, lon: 100.5018 },
-  { n: "Singapur", c: "Singapur", r: "AS", cap: 1, mil: 1, lat: 1.3521, lon: 103.8198 },
-  { n: "Mumbai", c: "Indien", r: "AS", cap: 0, mil: 1, lat: 19.0760, lon: 72.8777 },
-  { n: "Dubai", c: "VAE", r: "AS", cap: 0, mil: 1, lat: 25.2048, lon: 55.2708 },
-  { n: "Istanbul", c: "Türkei", r: "AS", cap: 0, mil: 1, lat: 41.0082, lon: 28.9784 },
-  { n: "New York City", c: "USA", r: "AM", cap: 0, mil: 1, lat: 40.7128, lon: -74.0060 },
-  { n: "Washington, D.C.", c: "USA", r: "AM", cap: 1, mil: 0, lat: 38.9072, lon: -77.0369 },
-  { n: "Ottawa", c: "Kanada", r: "AM", cap: 1, mil: 0, lat: 45.4215, lon: -75.6972 },
-  { n: "Toronto", c: "Kanada", r: "AM", cap: 0, mil: 1, lat: 43.6532, lon: -79.3832 },
-  { n: "Mexiko-Stadt", c: "Mexiko", r: "AM", cap: 1, mil: 1, lat: 19.4326, lon: -99.1332 },
-  { n: "Buenos Aires", c: "Argentinien", r: "AM", cap: 1, mil: 1, lat: -34.6037, lon: -58.3816 },
-  { n: "Rio de Janeiro", c: "Brasilien", r: "AM", cap: 0, mil: 1, lat: -22.9068, lon: -43.1729 },
-  { n: "Brasília", c: "Brasilien", r: "AM", cap: 1, mil: 1, lat: -15.7975, lon: -47.8919 },
-  { n: "Kairo", c: "Ägypten", r: "AF", cap: 1, mil: 1, lat: 30.0444, lon: 31.2357 },
-  { n: "Nairobi", c: "Kenia", r: "AF", cap: 1, mil: 1, lat: -1.2921, lon: 36.8219 },
-  { n: "Kapstadt", c: "Südafrika", r: "AF", cap: 1, mil: 1, lat: -33.9249, lon: 18.4241 },
-  { n: "Sydney", c: "Australien", r: "AF", cap: 0, mil: 1, lat: -33.8688, lon: 151.2093 },
-  { n: "Canberra", c: "Australien", r: "AF", cap: 1, mil: 0, lat: -35.2809, lon: 149.1300 }
+  { n: "Berlin", c: "Deutschland", r: "EU", cap: 1, mil: 1, lm: ["Brandenburger Tor", "Reichstagsgebäude", "Berliner Fernsehturm"] },
+  { n: "Paris", c: "Frankreich", r: "EU", cap: 1, mil: 1, lm: ["Eiffelturm", "Louvre", "Arc de Triomphe"] },
+  { n: "Madrid", c: "Spanien", r: "EU", cap: 1, mil: 1, lm: ["Palacio Real Madrid", "Puerta de Alcalá", "Plaza Mayor Madrid"] },
+  { n: "Rom", c: "Italien", r: "EU", cap: 1, mil: 1, lm: ["Kolosseum", "Petersdom", "Trevi-Brunnen"] },
+  { n: "London", c: "Großbritannien", r: "EU", cap: 1, mil: 1, lm: ["Big Ben", "Tower Bridge", "London Eye"] },
+  { n: "Wien", c: "Österreich", r: "EU", cap: 1, mil: 1, lm: ["Schloss Schönbrunn", "Stephansdom", "Wiener Riesenrad"] },
+  { n: "Warschau", c: "Polen", r: "EU", cap: 1, mil: 1, lm: ["Kulturpalast Warschau", "Königsschloss Warschau", "Altstadt Warschau"] },
+  { n: "Prag", c: "Tschechien", r: "EU", cap: 1, mil: 1, lm: ["Karlsbrücke", "Prager Burg", "Altstädter Ring"] },
+  { n: "Barcelona", c: "Spanien", r: "EU", cap: 0, mil: 1, lm: ["Sagrada Família", "Park Güell", "Casa Batlló"] },
+  { n: "Mailand", c: "Italien", r: "EU", cap: 0, mil: 1, lm: ["Mailänder Dom", "Galleria Vittorio Emanuele II", "Castello Sforzesco"] },
+  { n: "Hamburg", c: "Deutschland", r: "EU", cap: 0, mil: 1, lm: ["Elbphilharmonie", "Speicherstadt", "Hamburger Rathaus"] },
+  { n: "München", c: "Deutschland", r: "EU", cap: 0, mil: 1, lm: ["Frauenkirche München", "Marienplatz München", "Schloss Nymphenburg"] },
+  { n: "Lissabon", c: "Portugal", r: "EU", cap: 1, mil: 0, lm: ["Torre de Belém", "Ponte 25 de Abril", "Mosteiro dos Jerónimos"] },
+  { n: "Athen", c: "Griechenland", r: "EU", cap: 1, mil: 0, lm: ["Akropolis Athen", "Parthenon", "Olympieion Athen"] },
+  { n: "Stockholm", c: "Schweden", r: "EU", cap: 1, mil: 0, lm: ["Gamla stan", "Stockholms stadshus", "Stockholmer Schloss"] },
+  { n: "Oslo", c: "Norwegen", r: "EU", cap: 1, mil: 0, lm: ["Opernhaus Oslo", "Königliches Schloss Oslo", "Festung Akershus"] },
+  { n: "Bern", c: "Schweiz", r: "EU", cap: 1, mil: 0, lm: ["Bundeshaus Bern", "Zytglogge", "Berner Münster"] },
+  { n: "Tokio", c: "Japan", r: "AS", cap: 1, mil: 1, lm: ["Tokyo Skytree", "Tokyo Tower", "Senso-ji"] },
+  { n: "Seoul", c: "Südkorea", r: "AS", cap: 1, mil: 1, lm: ["N Seoul Tower", "Gyeongbokgung", "Lotte World Tower"] },
+  { n: "Peking", c: "China", r: "AS", cap: 1, mil: 1, lm: ["Verbotene Stadt", "Himmelstempel", "Tiananmen-Platz"] },
+  { n: "Bangkok", c: "Thailand", r: "AS", cap: 1, mil: 1, lm: ["Wat Arun", "Großer Palast Bangkok", "Wat Phra Kaeo"] },
+  { n: "Singapur", c: "Singapur", r: "AS", cap: 1, mil: 1, lm: ["Marina Bay Sands", "Gardens by the Bay", "Merlion"] },
+  { n: "Mumbai", c: "Indien", r: "AS", cap: 0, mil: 1, lm: ["Gateway of India", "Taj Mahal Palace Hotel", "Chhatrapati Shivaji Terminus"] },
+  { n: "Dubai", c: "VAE", r: "AS", cap: 0, mil: 1, lm: ["Burj Khalifa", "Burj al Arab", "Palm Jumeirah"] },
+  { n: "Istanbul", c: "Türkei", r: "AS", cap: 0, mil: 1, lm: ["Hagia Sophia", "Blaue Moschee", "Galataturm"] },
+  { n: "New York City", c: "USA", r: "AM", cap: 0, mil: 1, lm: ["Freiheitsstatue", "Empire State Building", "Brooklyn Bridge"] },
+  { n: "Washington, D.C.", c: "USA", r: "AM", cap: 1, mil: 0, lm: ["Kapitol Washington", "Weißes Haus", "Lincoln Memorial"] },
+  { n: "Ottawa", c: "Kanada", r: "AM", cap: 1, mil: 0, lm: ["Parliament Hill Ottawa", "Rideau Canal", "Château Laurier"] },
+  { n: "Toronto", c: "Kanada", r: "AM", cap: 0, mil: 1, lm: ["CN Tower", "Toronto City Hall", "Casa Loma"] },
+  { n: "Mexiko-Stadt", c: "Mexiko", r: "AM", cap: 1, mil: 1, lm: ["Palacio de Bellas Artes", "El Ángel de la Independencia", "Zócalo Mexiko-Stadt"] },
+  { n: "Buenos Aires", c: "Argentinien", r: "AM", cap: 1, mil: 1, lm: ["Obelisk von Buenos Aires", "Casa Rosada", "Teatro Colón"] },
+  { n: "Rio de Janeiro", c: "Brasilien", r: "AM", cap: 0, mil: 1, lm: ["Cristo Redentor", "Zuckerhut Rio de Janeiro", "Copacabana"] },
+  { n: "Brasília", c: "Brasilien", r: "AM", cap: 1, mil: 1, lm: ["Kathedrale von Brasília", "Nationalkongress Brasilien", "Palácio da Alvorada"] },
+  { n: "Kairo", c: "Ägypten", r: "AF", cap: 1, mil: 1, lm: ["Pyramiden von Gizeh", "Muhammad-Ali-Moschee", "Fernsehturm Kairo"] },
+  { n: "Nairobi", c: "Kenia", r: "AF", cap: 1, mil: 1, lm: ["Kenyatta International Convention Centre", "Nairobi skyline", "Parliament Buildings Nairobi"] },
+  { n: "Kapstadt", c: "Südafrika", r: "AF", cap: 1, mil: 1, lm: ["Tafelberg", "Victoria & Alfred Waterfront", "Kapstadt-Stadion"] },
+  { n: "Sydney", c: "Australien", r: "AF", cap: 0, mil: 1, lm: ["Sydney Opera House", "Sydney Harbour Bridge", "Sydney Tower"] },
+  { n: "Canberra", c: "Australien", r: "AF", cap: 1, mil: 0, lm: ["Parliament House Canberra", "Australian War Memorial", "Lake Burley Griffin"] }
 ];
 
 const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
+const API_EN = "https://en." + "wiki" + "pedia.org/w/api.php";
 const API_CM = "https://commons." + "wiki" + "media.org/w/api.php";
 let state = { players: [], turn: 0, goal: 50, opts: 6, pool: [], used: [], timer: null, step: 0, locked: false, cur: null };
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
-const validImg = u => u && /\.(jpg|jpeg)/i.test(u) && !/flag|coat|map|logo|icon|locator|blank|wappen|karte|diagram|plan|seal|arms/i.test(u);
+const BAD_WORDS = /flag|coat|map|logo|icon|locator|blank|wappen|karte|diagram|plan|seal|arms|animal|lion|zebra|giraffe|elephant|bird|leopard|cheetah|rhino|buffalo|monkey|insect|flower|plant|food|dish|meal|menu|restaurant|cafe|interior|room|bedroom|kitchen|bathroom|toilet|selfie|portrait|person|people|crowd|exhibit|artifact|coin|stamp|book|page|signature|graph|chart|device|machine|engine|car|bus|train|truck|phone|screen|plaque|sign|grave|cemetery|poster/i;
 
-async function fetchCitySlides(city) {
+function isSharpCityPhoto(info) {
+  if (!info || !info.url) return false;
+  const u = info.thumburl || info.url;
+  if (!/\.(jpg|jpeg)/i.test(u)) return false;
+  if (BAD_WORDS.test(u)) return false;
+  if (info.width && info.width < 1200) return false;
+  if (info.width && info.height && info.width < info.height * 1.15) return false;
+  return true;
+}
+
+async function fetchCommonsQuery(query, limit = 20) {
   const hdr = { "Api-User-Agent": "URBI-Quiz/1.0 (https://ka-2.art)" };
-  let outer = [];
-  let inner = [];
-
+  const u = `${API_CM}?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&gsrlimit=${limit}&prop=imageinfo&iiprop=url|size&iiurlwidth=1000&format=json&origin=*`;
   try {
-    const uGeo = `${API_CM}?action=query&generator=geosearch&ggscoord=${city.lat}|${city.lon}&ggsradius=10000&ggsnamespace=6&ggslimit=25&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
-    const rGeo = await fetch(uGeo, { headers: hdr }).then(r => r.json());
-    outer = Object.values(rGeo.query?.pages || {})
-      .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
-      .filter(validImg);
-  } catch (e) {}
+    const r = await fetch(u, { headers: hdr }).then(res => res.json());
+    return Object.values(r.query?.pages || {})
+      .map(p => p.imageinfo?.at(0))
+      .filter(isSharpCityPhoto)
+      .map(i => i.thumburl || i.url);
+  } catch (e) {
+    return [];
+  }
+}
 
-  try {
-    const restBase = "https://de." + "wiki" + "pedia.org/api/rest_v1/page/media-list/";
-    const rMedia = await fetch(restBase + encodeURIComponent(city.n), { headers: hdr }).then(r => r.json());
-    inner = (rMedia.items || [])
-      .filter(item => item.type === "image" && item.srcset?.length)
-      .map(item => {
-        const src = item.srcset.at(0).src;
-        return src.startsWith("//") ? "https:" + src : src;
-      })
-      .filter(validImg);
-  } catch (e) {}
-
-  if (inner.length < 4) {
+async function fetchArticleLeadImage(title) {
+  const hdr = { "Api-User-Agent": "URBI-Quiz/1.0 (https://ka-2.art)" };
+  for (const base of [API_DE, API_EN]) {
     try {
-      const uSrch = `${API_CM}?action=query&generator=search&gsrsearch=${encodeURIComponent(city.n + " landmark architecture")}&gsrnamespace=6&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
-      const rSrch = await fetch(uSrch, { headers: hdr }).then(r => r.json());
-      const extra = Object.values(rSrch.query?.pages || {})
-        .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
-        .filter(validImg);
-      inner = [...inner, ...extra];
+      const u = `${base}?action=query&redirects=1&titles=${encodeURIComponent(title)}&prop=pageimages&piprop=thumbnail|original&pithumbsize=1000&format=json&origin=*`;
+      const d = await fetch(u, { headers: hdr }).then(r => r.json());
+      const p = Object.values(d.query?.pages || {}).at(0);
+      const orig = p?.original;
+      const thumb = p?.thumbnail?.source;
+      if (thumb && orig && orig.width >= 1000 && orig.width > orig.height && !BAD_WORDS.test(thumb)) {
+        return thumb;
+      }
     } catch (e) {}
   }
+  const fallback = await fetchCommonsQuery(`"${title}"`, 5);
+  return fallback.at(0) || null;
+}
 
-  const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
-  if (!combined.length) return [];
-  while (combined.length < 10) combined.push(combined.at(combined.length - 1));
-  return combined.slice(0, 10);
+async function fetchCitySlides(city) {
+  const qDistricts = `filetype:bitmap "${city.n}" (street OR district OR bridge OR square OR station OR park OR skyline) -animal -interior -museum`;
+  const [districtPool, lm1, lm2, lm3] = await Promise.all([
+    fetchCommonsQuery(qDistricts, 30),
+    fetchArticleLeadImage(city.lm.at(0)),
+    fetchArticleLeadImage(city.lm.at(1)),
+    fetchArticleLeadImage(city.lm.at(2))
+  ]);
+
+  const landmarks = [lm1, lm2, lm3].filter(Boolean);
+  const uniqueDistricts = [...new Set(districtPool)].filter(u => !landmarks.includes(u));
+  let firstSeven = shuffle(uniqueDistricts).slice(0, 10 - landmarks.length);
+
+  if (firstSeven.length + landmarks.length < 10) {
+    const extra = await fetchCommonsQuery(`filetype:bitmap "${city.n}" architecture OR building OR view`, 25);
+    const more = [...new Set(extra)].filter(u => !landmarks.includes(u) && !firstSeven.includes(u));
+    firstSeven = [...firstSeven, ...shuffle(more)].slice(0, 10 - landmarks.length);
+  }
+
+  return [...firstSeven, ...landmarks].slice(0, 10);
 }
 
 async function fetchExtract(name) {
