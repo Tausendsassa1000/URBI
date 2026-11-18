@@ -253,27 +253,42 @@ const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
 const API_CM = "https://commons." + "wiki" + "media.org/w/api.php";
 let state = { players: [], turn: 0, goal: 50, opts: 6, pool: [], used: [], timer: null, step: 0, locked: false, cur: null };
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
-const validImg = u => u && /\.(jpg|jpeg|png)$/i.test(u) && !/flag|coat|map|logo|icon|locator|blank/i.test(u);
+const validImg = u => u && /\.(jpg|jpeg)$/i.test(u) && !/flag|coat|map|logo|icon|locator|blank|wappen|karte|diagram|plan/i.test(u);
 
 async function fetchCitySlides(city) {
-  const offLat = city.lat + (Math.random() - 0.5) * 0.06;
-  const offLon = city.lon + (Math.random() - 0.5) * 0.06;
-  const uGeo = `${API_CM}?action=query&generator=geosearch&ggscoord=${offLat}|${offLon}&ggsradius=6000&ggsnamespace=6&ggslimit=18&prop=imageinfo&iiprop=url&iiurlwidth=900&format=json&origin=*`;
-  const uArt = `${API_DE}?action=query&titles=${encodeURIComponent(city.n)}&generator=images&gimlimit=20&prop=imageinfo|extracts&exintro=1&explaintext=1&iiprop=url&iiurlwidth=900&format=json&origin=*`;
-  const [rGeo, rArt] = await Promise.all([fetch(uGeo).then(r => r.json()), fetch(uArt).then(r => r.json())]);
+  try {
+    const uGeo = `${API_CM}?action=query&generator=geosearch&ggscoord=${city.lat}|${city.lon}&ggsradius=10000&ggsnamespace=6&ggslimit=25&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+    const uArt = `${API_DE}?action=query&titles=${encodeURIComponent(city.n)}&generator=images&gimlimit=25&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+    const [rGeo, rArt] = await Promise.all([
+      fetch(uGeo).then(r => r.json()),
+      fetch(uArt).then(r => r.json())
+    ]);
 
-  const outer = Object.values(rGeo.query?.pages || {}).map(p => p.imageinfo?.at(0)?.thumburl).filter(validImg);
-  const inner = Object.values(rArt.query?.pages || {}).map(p => p.imageinfo?.at(0)?.thumburl).filter(validImg);
-  const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
-  while (combined.length < 10 && combined.length > 0) combined.push(combined.at(combined.length - 1));
-  return combined.slice(0, 10);
+    const outer = Object.values(rGeo.query?.pages || {})
+      .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
+      .filter(validImg);
+    const inner = Object.values(rArt.query?.pages || {})
+      .map(p => p.imageinfo?.at(0)?.thumburl || p.imageinfo?.at(0)?.url)
+      .filter(validImg);
+
+    const combined = [...new Set([...shuffle(outer).slice(0, 6), ...shuffle(inner).slice(0, 6)])];
+    if (!combined.length) return [];
+    while (combined.length < 10) combined.push(combined.at(combined.length - 1));
+    return combined.slice(0, 10);
+  } catch (e) {
+    return [];
+  }
 }
 
 async function fetchExtract(name) {
-  const u = `${API_DE}?action=query&titles=${encodeURIComponent(name)}&prop=extracts&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`;
-  const d = await fetch(u).then(r => r.json());
-  const p = Object.values(d.query?.pages || {}).at(0);
-  return p?.extract || "";
+  try {
+    const u = `${API_DE}?action=query&titles=${encodeURIComponent(name)}&prop=extracts&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`;
+    const d = await fetch(u).then(r => r.json());
+    const p = Object.values(d.query?.pages || {}).at(0);
+    return p?.extract || "";
+  } catch (e) {
+    return "";
+  }
 }
 
 function renderScores() {
@@ -289,18 +304,21 @@ function showSlide(urls, idx) {
   const showA = idx % 2 === 0;
   const target = showA ? a : b;
   const other = showA ? b : a;
+  target.onload = () => {
+    target.classList.add("active");
+    other.classList.remove("active");
+  };
   target.src = urls.at(idx);
-  target.onload = () => { target.classList.add("active"); other.classList.remove("active"); };
   document.getElementById("imgCounter").textContent = `Bild ${idx + 1} / 10`;
   document.getElementById("ptsDisplay").textContent = `${10 - idx} Punkte`;
 }
-
-async function startRound() {
+async function startRound(tries = 0) {
   clearInterval(state.timer);
   state.locked = false;
   state.step = 0;
   document.getElementById("infoBox").classList.add("hidden");
   document.getElementById("optGrid").innerHTML = "";
+  document.getElementById("loadingTxt").textContent = "Suche Stadtansichten...";
   document.getElementById("loadingTxt").classList.remove("hidden");
   document.getElementById("imgA").classList.remove("active");
   document.getElementById("imgB").classList.remove("active");
@@ -313,7 +331,11 @@ async function startRound() {
   state.cur = city;
 
   const slides = await fetchCitySlides(city);
-  if (slides.length < 3) return startRound();
+  if (slides.length < 2 && tries < 5) return startRound(tries + 1);
+  if (!slides.length) {
+    document.getElementById("loadingTxt").textContent = "Keine Bilder geladen. Bitte Seite neu laden.";
+    return;
+  }
   document.getElementById("loadingTxt").classList.add("hidden");
 
   const sameReg = CITIES.filter(c => c.n !== city.n && c.r === city.r);
