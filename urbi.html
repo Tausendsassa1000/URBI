@@ -229,7 +229,75 @@ CITIES.push(
   { n: "Sydney", c: "Australien", r: "AF", cap: 0, mil: 1, lm: ["Sydney Opera House", "Sydney Harbour Bridge", "Sydney Tower"] },
   { n: "Canberra", c: "Australien", r: "AF", cap: 1, mil: 0, lm: ["Parliament House Canberra", "Australian War Memorial", "Lake Burley Griffin"] }
 );
-const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
+  CITIES.push(
+  { n: "Basel", c: "Schweiz", r: "EU_EXT", cap: 0, mil: 0, lm: ["Basler Münster", "Mittlere Brücke", "Rathaus Basel"] },
+  { n: "Salzburg", c: "Österreich", r: "EU_EXT", cap: 0, mil: 0, lm: ["Festung Hohensalzburg", "Salzburger Dom", "Schloss Mirabell"] },
+  { n: "Graz", c: "Österreich", r: "EU_EXT", cap: 0, mil: 0, lm: ["Grazer Uhrturm", "Kunsthaus Graz", "Schloss Eggenberg Graz"] },
+  { n: "Stuttgart", c: "Deutschland", r: "EU_EXT", cap: 0, mil: 0, lm: ["Schlossplatz Stuttgart", "Stuttgarter Fernsehturm", "Mercedes-Benz Museum"] },
+  { n: "Düsseldorf", c: "Deutschland", r: "EU_EXT", cap: 0, mil: 0, lm: ["Rheinturm", "MedienHafen", "Königsallee Düsseldorf"] },
+  { n: "Leipzig", c: "Deutschland", r: "EU_EXT", cap: 0, mil: 0, lm: ["Völkerschlachtdenkmal", "Thomaskirche Leipzig", "Altes Rathaus Leipzig"] },
+  { n: "Nizza", c: "Frankreich", r: "EU_EXT", cap: 0, mil: 0, lm: ["Promenade des Anglais", "Place Masséna", "Colline du Château"] },
+  { n: "Bordeaux", c: "Frankreich", r: "EU_EXT", cap: 0, mil: 0, lm: ["Place de la Bourse Bordeaux", "Pont de Pierre Bordeaux", "Cité du Vin"] },
+  { n: "Bilbao", c: "Spanien", r: "EU_EXT", cap: 0, mil: 0, lm: ["Guggenheim-Museum Bilbao", "Zubizuri", "Teatro Arriaga"] },
+  { n: "Málaga", c: "Spanien", r: "EU_EXT", cap: 0, mil: 0, lm: ["Alcazaba Málaga", "Kathedrale von Málaga", "Castillo de Gibralfaro"] },
+  { n: "Bologna", c: "Italien", r: "EU_EXT", cap: 0, mil: 0, lm: ["Geschlechtertürme von Bologna", "Piazza Maggiore Bologna", "Santuario della Madonna di San Luca"] },
+  { n: "Turin", c: "Italien", r: "EU_EXT", cap: 0, mil: 0, lm: ["Mole Antonelliana", "Palazzo Reale Turin", "Piazza Castello Turin"] },
+  { n: "Danzig", c: "Polen", r: "EU_EXT", cap: 0, mil: 0, lm: ["Krantor Danzig", "Marienkirche Danzig", "Langer Markt Danzig"] },
+  { n: "Göteborg", c: "Schweden", r: "EU_EXT", cap: 0, mil: 0, lm: ["Liseberg", "Älvsborgsbron", "Feskekörka"] },
+  { n: "Thessaloniki", c: "Griechenland", r: "EU_EXT", cap: 0, mil: 0, lm: ["Weißer Turm Thessaloniki", "Rotunde Thessaloniki", "Aristoteles-Platz"] }
+);
+    CITIES.push(
+  { n: "Zagreb", c: "Kroatien", r: "EU", cap: 1, mil: 0, lm: ["Kathedrale von Zagreb", "St.-Markus-Kirche Zagreb", "Ban-Jelačić-Platz"] },
+  { n: "Belgrad", c: "Serbien", r: "EU", cap: 1, mil: 1, lm: ["Dom des Heiligen Sava", "Festung von Belgrad", "Platz der Republik Belgrad"] },
+  { n: "Sofia", c: "Bulgarien", r: "EU", cap: 1, mil: 1, lm: ["Alexander-Newski-Kathedrale Sofia", "Nationaltheater Iwan Wasow", "Witoscha-Boulevard"] },
+  { n: "Bratislava", c: "Slowakei", r: "EU", cap: 1, mil: 0, lm: ["Burg Bratislava", "Brücke des Slowakischen Nationalaufstandes", "Martinsdom Bratislava"] },
+  { n: "Ljubljana", c: "Slowenien", r: "EU", cap: 1, mil: 0, lm: ["Drei Brücken Ljubljana", "Laibacher Burg", "Prešeren-Platz"] },
+  { n: "Tallinn", c: "Estland", r: "EU", cap: 1, mil: 0, lm: ["Alexander-Newski-Kathedrale Tallinn", "Rathausplatz Tallinn", "Schloss Toompea"] },
+  { n: "Riga", c: "Lettland", r: "EU", cap: 1, mil: 0, lm: ["Schwarzhäupterhaus Riga", "Freiheitsdenkmal Riga", "Dom zu Riga"] },
+  { n: "Vilnius", c: "Litauen", r: "EU", cap: 1, mil: 0, lm: ["Gediminas-Turm", "Kathedrale St. Stanislaus Vilnius", "Tor der Morgenröte"] },
+  { n: "Reykjavík", c: "Island", r: "EU", cap: 1, mil: 0, lm: ["Hallgrímskirkja", "Harpa Reykjavík", "Sólfar"] },
+  { n: "Valletta", c: "Malta", r: "EU", cap: 1, mil: 0, lm: ["St. John’s Co-Cathedral", "Upper Barrakka Gardens", "Großmeisterpalast Valletta"] },
+  { n: "Luxemburg", c: "Luxemburg", r: "EU", cap: 1, mil: 0, lm: ["Adolphe-Brücke", "Großherzoglicher Palast Luxemburg", "Kasematten Luxemburg"] },
+  { n: "Birmingham", c: "Großbritannien", r: "EU", cap: 0, mil: 1, lm: ["Library of Birmingham", "Victoria Square Birmingham", "Bullring Birmingham"] },
+  { n: "Neapel", c: "Italien", r: "EU", cap: 0, mil: 1, lm: ["Castel dell’Ovo", "Piazza del Plebiscito", "Galleria Umberto I"] },
+  { n: "Kiew", c: "Ukraine", r: "EU", cap: 1, mil: 1, lm: ["Sophienkathedrale Kiew", "Maidan Nesaleschnosti", "Kiewer Höhlenkloster"] }
+);
+    CITIES.push(
+  { n: "Kuala Lumpur", c: "Malaysia", r: "AS", cap: 1, mil: 1, lm: ["Petronas Towers", "Batu-Höhlen", "Menara Kuala Lumpur"] },
+  { n: "Jakarta", c: "Indonesien", r: "AS", cap: 1, mil: 1, lm: ["Monumen Nasional", "Istiqlal-Moschee", "Kathedrale von Jakarta"] },
+  { n: "Manila", c: "Philippinen", r: "AS", cap: 1, mil: 1, lm: ["Intramuros", "Rizal-Park", "Kathedrale von Manila"] },
+  { n: "Hanoi", c: "Vietnam", r: "AS", cap: 1, mil: 1, lm: ["Hoan-Kiem-See", "Literaturtempel Hanoi", "Ho-Chi-Minh-Mausoleum"] },
+  { n: "Ho-Chi-Minh-Stadt", c: "Vietnam", r: "AS", cap: 0, mil: 1, lm: ["Bitexco Financial Tower", "Kathedrale Notre-Dame Ho-Chi-Minh-Stadt", "Ben-Thanh-Markt"] },
+  { n: "Taipeh", c: "Taiwan", r: "AS", cap: 1, mil: 1, lm: ["Taipei 101", "Nationale Chiang-Kai-shek-Gedächtnishalle", "Longshan-Tempel"] },
+  { n: "Neu-Delhi", c: "Indien", r: "AS", cap: 1, mil: 1, lm: ["India Gate", "Rotes Fort Delhi", "Lotus-Tempel"] },
+  { n: "Shanghai", c: "China", r: "AS", cap: 0, mil: 1, lm: ["Oriental Pearl Tower", "The Bund", "Shanghai Tower"] },
+  { n: "Hongkong", c: "China", r: "AS", cap: 0, mil: 1, lm: ["Victoria Peak", "Bank of China Tower", "Tian Tan Buddha"] },
+  { n: "Osaka", c: "Japan", r: "AS", cap: 0, mil: 1, lm: ["Burg Osaka", "Dotonbori", "Umeda Sky Building"] },
+  { n: "Riad", c: "Saudi-Arabien", r: "AS", cap: 1, mil: 1, lm: ["Kingdom Centre", "Al Faisaliyah Center", "Festung Masmak"] },
+  { n: "Doha", c: "Katar", r: "AS", cap: 1, mil: 1, lm: ["Museum für Islamische Kunst Doha", "The Pearl Doha", "Souq Waqif"] },
+  { n: "Jerusalem", c: "Israel", r: "AS", cap: 1, mil: 0, lm: ["Felsendom", "Klagemauer", "Grabeskirche"] },
+  { n: "Tiflis", c: "Georgien", r: "AS", cap: 1, mil: 1, lm: ["Narikala", "Friedensbrücke Tiflis", "Sameba-Kathedrale Tiflis"] },
+  { n: "Baku", c: "Aserbaidschan", r: "AS", cap: 1, mil: 1, lm: ["Flame Towers", "Jungfrauenturm Baku", "Heydar-Aliyev-Zentrum"] }
+);
+    CITIES.push(
+  { n: "Los Angeles", c: "USA", r: "AM", cap: 0, mil: 1, lm: ["Hollywood Sign", "Griffith-Observatorium", "Santa Monica Pier"] },
+  { n: "Chicago", c: "USA", r: "AM", cap: 0, mil: 1, lm: ["Willis Tower", "Cloud Gate", "Navy Pier"] },
+  { n: "San Francisco", c: "USA", r: "AM", cap: 0, mil: 0, lm: ["Golden Gate Bridge", "Alcatraz", "Transamerica Pyramid"] },
+  { n: "Montreal", c: "Kanada", r: "AM", cap: 0, mil: 1, lm: ["Notre-Dame de Montréal", "Olympiastadion Montreal", "Mont Royal"] },
+  { n: "Havanna", c: "Kuba", r: "AM", cap: 1, mil: 1, lm: ["El Capitolio", "Malecón Havanna", "Plaza de la Catedral Havanna"] },
+  { n: "Bogotá", c: "Kolumbien", r: "AM", cap: 1, mil: 1, lm: ["Monserrate", "Plaza de Bolívar Bogotá", "Museo del Oro"] },
+  { n: "Lima", c: "Peru", r: "AM", cap: 1, mil: 1, lm: ["Plaza Mayor Lima", "Kathedrale von Lima", "Kloster San Francisco Lima"] },
+  { n: "Santiago de Chile", c: "Chile", r: "AM", cap: 1, mil: 1, lm: ["Gran Torre Santiago", "Palacio de La Moneda", "Cerro San Cristóbal"] },
+  { n: "São Paulo", c: "Brasilien", r: "AM", cap: 0, mil: 1, lm: ["Avenida Paulista", "Kathedrale von São Paulo", "Ponte Octávio Frias de Oliveira"] },
+  { n: "Casablanca", c: "Marokko", r: "AF", cap: 0, mil: 1, lm: ["Hassan-II.-Moschee", "Place Mohammed V", "Villa des Arts Casablanca"] },
+  { n: "Tunis", c: "Tunesien", r: "AF", cap: 1, mil: 1, lm: ["Ez-Zitouna-Moschee", "Medina von Tunis", "Kathedrale von Tunis"] },
+  { n: "Addis Abeba", c: "Äthiopien", r: "AF", cap: 1, mil: 1, lm: ["Dreifaltigkeitskathedrale Addis Abeba", "Meskel-Platz", "St.-Georgs-Kathedrale Addis Abeba"] },
+  { n: "Johannesburg", c: "Südafrika", r: "AF", cap: 0, mil: 1, lm: ["Nelson Mandela Bridge", "Hillbrow Tower", "Constitution Hill Johannesburg"] },
+  { n: "Melbourne", c: "Australien", r: "AF", cap: 0, mil: 1, lm: ["Flinders Street Station", "Royal Exhibition Building", "Eureka Tower"] },
+  { n: "Auckland", c: "Neuseeland", r: "AF", cap: 0, mil: 1, lm: ["Sky Tower Auckland", "Auckland Harbour Bridge", "Auckland War Memorial Museum"] },
+  { n: "Wellington", c: "Neuseeland", r: "AF", cap: 1, mil: 0, lm: ["Beehive Wellington", "Wellington Cable Car", "Museum of New Zealand Te Papa Tongarewa"] }
+);
+  const API_DE = "https://de." + "wiki" + "pedia.org/w/api.php";
 const API_EN = "https://en." + "wiki" + "pedia.org/w/api.php";
 const API_CM = "https://commons." + "wiki" + "media.org/w/api.php";
 let state = { players: [], turn: 0, goal: 50, opts: 6, pool: [], used: [], timer: null, step: 0, locked: false, cur: null };
@@ -351,7 +419,9 @@ async function handleGuess(guess, btn) {
   });
   renderScores();
   document.getElementById("resTitle").textContent = win ? `Richtig! +${gained} Punkte (${state.cur.n}, ${state.cur.c})` : `Gesucht war: ${state.cur.n} (${state.cur.c})`;
-  document.getElementById("resDesc").textContent = await fetchExtract(state.cur.n);
+  const bio = await fetchExtract(state.cur.n);
+  const lmText = state.cur.lm?.length ? ` • Gezeigte Wahrzeichen: ${state.cur.lm.join(", ")}` : "";
+  document.getElementById("resDesc").textContent = bio + lmText;
   document.getElementById("infoBox").classList.remove("hidden");
 }
 
@@ -362,6 +432,9 @@ document.getElementById("nextBtn").addEventListener("click", () => {
     if (top >= state.goal && leaders.length === 1) {
       alert(`Herzlichen Glückwunsch! ${leaders.at(0).name} gewinnt URBI mit ${top} Punkten!`);
       document.getElementById("gameView").classList.add("hidden"); document.getElementById("menuView").classList.remove("hidden"); return;
+    }
+    if (top >= state.goal && leaders.length > 1) {
+      alert(`Gleichstand bei ${top} Punkten (${leaders.map(l => l.name).join(" & ")})! Es geht ins Sudden-Death-Stechen!`);
     }
   }
   startRound();
