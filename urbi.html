@@ -135,8 +135,22 @@
         </select>
       </div>
     </div>
-    <label>Spieler (kommagetrennt für Mehrspieler)</label>
-    <input id="pInput" value="Spieler 1" style="margin-bottom:14px;">
+        <div class="grid-2" style="margin-top:4px;">
+      <div>
+        <label>Anzahl Spieler</label>
+        <select id="pCount">
+          <option value="1" selected>1 Spieler (Solo)</option>
+          <option value="2">2 Spieler</option>
+          <option value="3">3 Spieler</option>
+          <option value="4">4 Spieler</option>
+          <option value="5">5 Spieler</option>
+          <option value="6">6 Spieler</option>
+          <option value="7">7 Spieler</option>
+          <option value="8">8 Spieler</option>
+        </select>
+      </div>
+      <div id="pNamesBox" class="grid-2" style="margin-bottom:0;"></div>
+    </div>
     <button class="btn-gold" id="startBtn">Spiel starten</button>
     <div class="credits">Bild- & Stadtdaten bereitgestellt von Wikipedia & Wikimedia Commons (CC-Lizenzen)</div>
   </div>
@@ -440,11 +454,26 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   startRound();
 });
 
+function renderNameInputs() {
+  const count = Number(document.getElementById("pCount").value);
+  const box = document.getElementById("pNamesBox");
+  const oldVals = [...box.querySelectorAll("input")].map(i => i.value);
+  box.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    const inp = document.createElement("input");
+    inp.placeholder = `Spieler ${i + 1}`;
+    inp.value = oldVals.at(i) || `Spieler ${i + 1}`;
+    box.appendChild(inp);
+  }
+}
+document.getElementById("pCount").addEventListener("change", renderNameInputs);
+renderNameInputs();
+
 document.getElementById("startBtn").addEventListener("click", () => {
   const cont = document.getElementById("fCont").value, type = document.getElementById("fType").value;
   state.opts = Number(document.getElementById("fOpts").value); state.goal = Number(document.getElementById("fGoal").value);
-  const names = document.getElementById("pInput").value.split(",").map(s => s.trim()).filter(Boolean);
-  state.players = (names.length ? names : ["Spieler 1"]).map(name => ({ name, pts: 0 }));
+  const inputs = [...document.querySelectorAll("#pNamesBox input")];
+  state.players = inputs.map((inp, i) => ({ name: inp.value.trim() || `Spieler ${i + 1}`, pts: 0 }));
   state.pool = CITIES.filter(c => {
     if (cont === "EU_EXT" && !c.r.startsWith("EU")) return false;
     else if (cont !== "ALL" && cont !== "EU_EXT" && c.r !== cont) return false;
